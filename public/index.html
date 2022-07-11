@@ -28,6 +28,7 @@
       // This variable will hold the WebSocket client connection.
       // Initialize in the init() function
       let wsClient;
+      const userName = prompt("Enter Username");
 
       ////////////////////////////////////////////////
       //////////////// DOM SETUP /////////////////////
@@ -76,6 +77,7 @@
           console.log("Connection to WebSocket server established");
           const data = {
             type: "NEW_USER",
+            payload: {userName}
           };
           wsClient.send(JSON.stringify(data));
         };
@@ -89,10 +91,10 @@
           const { type, payload } = JSON.parse(message);
           switch (type) {
             case "NEW_USER":
-              showMessageReceived("<em>New User has joined!</em>")
+              showMessageReceived('<em>' + payload.userName +' has joined!</em>');
               break;
             case "NEW_MESSAGE":
-              showMessageReceived(payload.message);
+              showMessageReceived(`[${payload.userName}] :  ${payload.message}`);
               break;
             default:
               break;
@@ -129,7 +131,7 @@
         // Exercise 9: Send the message in a custom message object with .type and .payload properties
         const data = {
           type: "NEW_MESSAGE",
-          payload: { message: message },
+          payload: { message: message ,userName: userName},
         };
         wsClient.send(JSON.stringify(data));
       }
